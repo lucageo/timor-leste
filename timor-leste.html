@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8' />
+  <title>Biodiversity Analysis Tool</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <!-- <script src='https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js'></script> -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js'></script>
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.css' rel='stylesheet' />
+  <link href='https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css' rel='stylesheet' />
+  <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/wnumb/1.0.4/wNumb.min.js'></script>
+
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/highcharts-more.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+  <!-- <script src='https://api.mapbox.com/mapbox.js/plugins/turf/v2.0.2/turf.min.js'></script> -->
+  <script src='src/js/mapbox-gl-draw.js'></script>
+  <script src='src/js/busyLoad.js'></script>
+
+  <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v0.18.0/mapbox-gl-draw.css' type='text/css'/>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.3.0/mapbox-gl-geocoder.min.js'></script>
+  <!-- Compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js" **defer**></script>
+
+  <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+<link rel='stylesheet' href='src/css/geocoder.css' type='text/css' />
+  <script src='src/js/mapbox-gl-draw-rectangle-mode.min.js'></script>
+
+  <link href="src/css/busyLoad.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="app/app.css" rel="stylesheet">
+</head>
+<body>
+
+
+
+  <div id="modal-carbon" class="modal">
+    <div class="modal-content">
+      <h4>Total Carbon </h4> <br>
+      <b>ABSTRACT</b>
+      <p>Total Carbon is computed by summing above-ground carbon (AGC), Belowground Biomass Carbon (BBCI) and Soil Organic Carbon. <br>
+        The Above-Ground Carbon (AGC) is expressed in Mg (megagrams or tonnes) of carbon per km<sup>2</sup>. It corresponds to the carbon fraction of 
+        the oven-dry weight of the woody parts (stem, bark, branches, and twigs) of all living trees, excluding stump and roots, 
+        as estimated by the GlobBiomass project (globbiomass.org) with 2010 as the reference year.
+        The Soil Organic Carbon is the amount of carbon stored in the soil (0 to 30 cm depth), expressed in Mg (megagrams or tonnes) per km<sup>2</sup>.
+        The Belowground Biomass Carbon (BBCI)is expressed in Mg (Megagrams or Tonnes) of carbon per km2. It represents an estimation of the carbon stored in
+        the roots of all living trees. This carbon pool is calculated as a fraction of the aboveground biomass carbon stock using root-to-shoot ratios (R). It is derived
+        from two main data sources: the global aboveground biomass map produced by the GlobBiomass project (globbiomass.org) and the 2019 Refinement to the 2006 IPCC Guidelines for National Greenhouse Gas Inventories (IPCC, 2019). </p>
+      <br><b>DATA PROVIDER</b>
+      <p>European Commission - Joint Research Centre</p>
+      <br><b>TECHNICAL BACKGROUND</b>
+      <p>The total carbon layer is the sum of the above-ground carbon (AGC), the belowground biomass carbon (BBC) and the soil organic carbon (SOC), expressed in Mg (megagrams or tonnes) of carbon per km2. The AGC corresponds to the carbon fraction of the oven-dry weight of the woody parts (stem, bark, branches and twigs) of all living trees, excluding stump and roots, as estimated by the GlobBiomass project (globbiomass.org) with 2010 as the reference year. The BBC corresponds to the carbon stored in the roots of all living trees and is calculated as a fraction of the AGC stock using root-to-shoot ratios. The SOC is the carbon that remains in the soil after partial decomposition of any material produced by living organisms, as estimated by FAO and ITPS in the Global Soil Organic Carbon Map Version 1.2.0. For more information about these layers, refer to: https://dopa.jrc.ec.europa.eu/en/factsheet-dopa-4?title=Carbon</p>
+      <br><b>RELATED SDGs </b>
+      <p>GOAL 15: Life on land, GOAL 13: Climate Action</p>
+      </p>
+    </div>
+  </div>
+
+  <div id="modal-water" class="modal">
+    <div class="modal-content">
+      <h4>Global Surface Water</h4> <br>
+      <b>ABSTRACT</b>
+      <p>Surface water affects many aspects of our world: the exchange of heat, gas and water vapour between the planet's surface and atmosphere. Water is the engine behind the distribution, movement and migration of Earth's plant and animal life and is just as essential for humans. It affects our capacity to grow crops and manage animal grazing lands, to run our industrial processes, to manufacture goods, it influences the movement of disease-vectors, toxins and pollutants, it generates energy directly (hydroelectric) and indirectly (thermoelectric), it is an essential part of our transport network, and forms part of our recreational, cultural and sporting world. The Water Occurrence dataset shows where surface water occurred between 1984 and 2018. Open water is any stretch of water open to the sky, and includes both freshwater and saltwater. The map displays water surfaces greater than 30m2 that are visible from space, including natural (rivers, lakes, coastal margins and wetlands) and artificial water bodies (reservoirs formed by dams, flooded areas such as opencast mines and quarries, flood irrigation areas such as paddy fields, and water bodies created by hydro-engineering projects such as waterway and harbour construction). This product captures both the intra and inter-annual variability and changes. The permanent water surfaces (100% occurrence over 36 years) are represented in blue, and areas where water sometimes occurs are shown in shades of pink to purple (0% - occurrence - 100%). The paler shades are areas where the water occurs less frequently. The map can support better informed water-management decision-making.</p>
+      <br><b>DATA PROVIDER</b>
+      <p>European Commission - Joint Research Centre</p>
+      <br><b>TECHNICAL BACKGROUND</b>
+      <p>TThe spatial and temporal variations in the presence of surface water are captured in a single product called Surface Water Occurrence. It is a measure of the frequency of the presence of water on the land surface over a given time period, expressed as a percentage of the available observations over time actually identified as water. The map covers 36 years (from 1984 to 2019) and records water occurrence in monthly time-steps. Some locations are underwater throughout the period of observation (100% of all observations are classified as water), others are underwater for a few months of every year (often for the same months each year), some are only underwater on an episodic basis, and some have never been underwater (0% classified as water).</p>
+      <br><b>RELATED SDGs </b>
+      <p>GOAL 06: Clean water and sanitation</p>
+      </p>
+    </div>
+  </div>
+
+  
+  <div id="modal-natural" class="modal">
+    <div class="modal-content">
+      <h4>Natural Areas (Copernicus Global Land Cover) </h4> <br>
+      <b>ABSTRACT</b>
+      <p>Whether you’re monitoring crops, modelling green energy installations or soil sealing, combatting loss of natural resources or just helping countries meet their Sustainable Development Goals, chances are high that you’ll need an accurate and spatially detailed map on land cover and land use. Earth Observation satellites, like those from EU’s flagship programme Copernicus, are key to providing such maps, at a global scale, with free and open access. Derived from the Copernicus Global Land Cover, this map represents the distribution of areas where land cover is not heavily disturbed by man’s activities. In other words, it shows areas where natural ecosystems and their associated species are expected to be found. </p>
+      <br><b>DATA PROVIDER</b>
+      <p>European Commission - Joint Research Centre</p>
+      <br><b>TECHNICAL BACKGROUND</b>
+      <p>This layer of Natural Areas is calculated using Copernicus Global 100m Land Cover map 2019, by aggregation of all land cover classes except ‘Urban/Built up’ and ‘Cultivated and managed vegetation/agriculture (cropland)’.</p>
+      <br><b>RELATED SDGs </b>
+      <p>GOAL 15: Life on land, GOAL 11: Sustainable Cities and Communities, GOAL 13: Climate Action, GOAL 3: Good Health and Well-being</p>
+      </p>
+    </div>
+  </div>
+  <div id="modal-forest" class="modal">
+    <div class="modal-content">
+      <h4>Intact Forest Landscapes (IFL)</h4> <br>
+      <b>ABSTRACT</b>
+      <p>The Intact Forest Landscapes (IFL) data set identifies unbroken expanses of natural ecosystems within the zone of forest extent that show no signs of significant human activity and are large enough that all native biodiversity, including viable populations of wide-ranging species, could be maintained. To map IFL areas, a set of criteria was developed and designed to be globally applicable and easily replicable, the latter to allow for repeated assessments over time as well as verification. IFL areas were defined as unfragmented landscapes, at least 50,000 hectares in size, and with a minimum width of 10 kilometers. These were then mapped from Landsat satellite imagery for the year 2000.
+        Changes in the extent of IFLs were identified within year 2000 IFL boundary using the global wall-to-wall Landsat image composite for year 2016 and the global forest cover loss dataset (Hansen et al., 2016). Areas identified as “reduction in extent” met the IFL criteria in 2000, but no longer met the criteria in 2013. The main causes of change were clearing for agriculture and tree plantations, industrial activity such as logging and mining, fragmentation due to infrastructure and new roads, and fires assumed to be caused by humans.</p>
+      <br><b>DATA PROVIDER</b>
+      <p>Greenpeace, University of Maryland, World Resources Institute and Transparent World.</p>
+      <br><b>TECHNICAL BACKGROUND</b>
+      <p>The IFL mapping approach is based on ‘inverse logic’, i.e. on mapping the opposite of intactness: altered and fragmented forest areas. The image analysis was conducted through expert-based visual interpretation, using Geographic Information System (GIS) overlays of medium spatial resolution satellite images with additional thematic and topographic map layers. The purpose is to detect evidence of significant human-caused alteration and fragmentation. To assess fragmentation, all developed areas were excluded and all infrastructure and settlements were buffered by 1 km. Patches without evidence of development, if large enough, are classified as IFL. The IFL Mapping Team produced and provides regular updates of the global IFL map which shows the boundary between unaltered forest landscapes (where most components, including species and site diversity, dynamics and ecological functions remain intact) and altered or fragmented forests (where some level of timber extraction, species composition change, anthropogenic fragmentation and/or alteration of ecosystem dynamics has taken place). The IFL methodology represents a practical, rapid, and cost-effective approach for assessing forest intactness, alteration and degradation at the global and regional scales.</p>
+      <br><b>RELATED SDGs </b>
+      <p>GOAL 15: Life on land</p>
+      </p>
+    </div>
+  </div>
+  <div id="modal-mammals" class="modal">
+    <div class="modal-content">
+      <h4>Mammals Richness </h4> <br>
+      <b>ABSTRACT</b>
+      <p>The Global Mammal Richness dataset derives from the aggregations of the presence grids data for the entire class, individual families, and International Union for the Conservation of Nature (IUCN) Red List status categories. The data are available at 1 km resolution. The grid cell values represent the number of species. The input vector layers are based on the IUCN Red List and the grids are computed by the European Commission- Joint Research Centre within the Digital Observatory for Protected Areas framework. The data from IUCN were downloaded in April 2020. </p>
+      <br><b>DATA PROVIDER</b>
+      <p>IUCN and European Commission - Joint Research Centre</p>
+      <br><b>TECHNICAL BACKGROUND</b>
+      <p>​​Range maps of all mammals are assessed globally by the IUCN (2020.1 version of the IUCN Red List of Threatened Species TM (RLTS)). Import has been restricted to polygons that are categorized by IUCN with the following attributes:
+        ● the presence is either extant or probably extant (maintained for compliance with previous analyzes);
+        ● the origin is either native or introduced;
+        ● the seasonality is breeding, non-breeding, or resident.
+        The above polygons have been rasterized at the resolution of 1 km, then dissolved (reducing the redundancy of multiple ranges by species).
+        </p>
+      <br><b>RELATED SDGs </b>
+      <p>GOAL 15: Life on land</p>
+      </p>
+    </div>
+  </div>
+  <div id="modal-th_mammals" class="modal">
+    <div class="modal-content">
+      <h4>Endemic Threatened Mammals Richness </h4> <br>
+      <b>ABSTRACT</b>
+      <p>The Threatened Global Mammal Richness dataset derives from the aggregations of the presence grids data for the entire class, individual families, and International Union for the Conservation of Nature (IUCN) Red List status categories. The data are available at 1 km resolution. The grid cell values represent the number of species. The input vector layers are based on the IUCN Red List and the grids are computed by the European Commission- Joint Research Centre within the Digital Observatory for Protected Areas framework. The data from IUCN were downloaded in April 2020. </p>
+      <br><b>DATA PROVIDER</b>
+      <p>IUCN and European Commission - Joint Research Centre</p>
+      <br><b>TECHNICAL BACKGROUND</b>
+      <p>​​Range maps of threatened mammals are assessed globally by the IUCN (2020.1 version of the IUCN Red List of Threatened Species TM (RLTS)). Import has been restricted to polygons that are categorized by IUCN with the following attributes:
+        ● the presence is either extant or probably extant (maintained for compliance with previous analyzes);
+        ● the origin is either native or introduced;
+        ● the seasonality is breeding, non-breeding, or resident.
+        The above polygons have been rasterized at the resolution of 1 km, then dissolved (reducing the redundancy of multiple ranges by species).
+        </p>
+      <br><b>RELATED SDGs </b>
+      <p>GOAL 15: Life on land</p>
+      </p>
+    </div>
+  </div>
+  <div id="modal-amphibians" class="modal">
+    <div class="modal-content">
+      <h4>Amphibians Richness </h4> <br>
+      <b>ABSTRACT</b>
+      <p>The Global Amphibians Richness dataset derives from the aggregations of the presence grids data for the entire class, individual families, and International Union for the Conservation of Nature (IUCN) Red List status categories. The data are available at 1 km resolution. The grid cell values represent the number of species. The input vector layers are based on the IUCN Red List and the grids are computed by the European Commission- Joint Research Centre within the Digital Observatory for Protected Areas framework. The data from IUCN were downloaded in April 2020. </p>
+      <br><b>DATA PROVIDER</b>
+      <p>IUCN and European Commission - Joint Research Centre</p>
+      <br><b>TECHNICAL BACKGROUND</b>
+      <p>​​Range maps of all amphibians are assessed globally by the IUCN (2020.1 version of the IUCN Red List of Threatened Species TM (RLTS)). Import has been restricted to polygons that are categorized by IUCN with the following attributes:
+        ● the presence is either extant or probably extant (maintained for compliance with previous analyzes);
+        ● the origin is either native or introduced;
+        ● the seasonality is breeding, non-breeding, or resident.
+        The above polygons have been rasterized at the resolution of 1 km, then dissolved (reducing the redundancy of multiple ranges by species).
+        </p>
+      <br><b>RELATED SDGs </b>
+      <p>GOAL 15: Life on land</p>
+      </p>
+    </div>
+  </div>
+  <div id="modal-th_amphibians" class="modal">
+    <div class="modal-content">
+    <h4>Endemic Threatened Amphibians Richness </h4> <br>
+    <b>ABSTRACT</b>
+    <p>The Threatened Global Amphibians Richness dataset derives from the aggregations of the presence grids data for the entire class, individual families, and International Union for the Conservation of Nature (IUCN) Red List status categories. The data are available at 1 km resolution. The grid cell values represent the number of species. The input vector layers are based on the IUCN Red List and the grids are computed by the European Commission- Joint Research Centre within the Digital Observatory for Protected Areas framework. The data from IUCN were downloaded in April 2020. </p>
+    <br><b>DATA PROVIDER</b>
+    <p>IUCN and European Commission - Joint Research Centre</p>
+    <br><b>TECHNICAL BACKGROUND</b>
+    <p>​​Range maps of threatened amphibians are assessed globally by the IUCN (2020.1 version of the IUCN Red List of Threatened Species TM (RLTS)). Import has been restricted to polygons that are categorized by IUCN with the following attributes:
+      ● the presence is either extant or probably extant (maintained for compliance with previous analyzes);
+      ● the origin is either native or introduced;
+      ● the seasonality is breeding, non-breeding, or resident.
+      The above polygons have been rasterized at the resolution of 1 km, then dissolved (reducing the redundancy of multiple ranges by species).
+      </p>
+    <br><b>RELATED SDGs </b>
+    <p>GOAL 15: Life on land</p>
+    </p>
+  </div>
+  </div>
+  <div id="modal-birds" class="modal">
+    <div class="modal-content">
+      <h4>Birds Richness </h4> <br>
+      <b>ABSTRACT</b>
+      <p>The Global Birds Richness dataset derives from the aggregations of the presence grids data for the entire class, individual families, and International Union for the Conservation of Nature (IUCN) Red List status categories. The data are available at 1 km resolution. The grid cell values represent the number of species. The input vector layers are based on the IUCN Red List and the grids are computed by the European Commission- Joint Research Centre within the Digital Observatory for Protected Areas framework. The data from IUCN were downloaded in April 2020. </p>
+      <br><b>DATA PROVIDER</b>
+      <p>IUCN and European Commission - Joint Research Centre</p>
+      <br><b>TECHNICAL BACKGROUND</b>
+      <p>​​Range maps of all birds are assessed globally by the IUCN (2020.1 version of the IUCN Red List of Threatened Species TM (RLTS)). Import has been restricted to polygons that are categorized by IUCN with the following attributes:
+        ● the presence is either extant or probably extant (maintained for compliance with previous analyzes);
+        ● the origin is either native or introduced;
+        ● the seasonality is breeding, non-breeding, or resident.
+        The above polygons have been rasterized at the resolution of 1 km, then dissolved (reducing the redundancy of multiple ranges by species).
+        </p>
+      <br><b>RELATED SDGs </b>
+      <p>GOAL 15: Life on land</p>
+      </p>
+    </div>
+  </div>
+  <div id="modal-th_birds" class="modal">
+    <div class="modal-content">
+      <h4>Endemic Threatened Birds Richness </h4> <br>
+      <b>ABSTRACT</b>
+      <p>The Global Threatened Birds Richness dataset derives from the aggregations of the presence grids data for the entire class, individual families, and International Union for the Conservation of Nature (IUCN) Red List status categories. The data are available at 1 km resolution. The grid cell values represent the number of species. The input vector layers are based on the IUCN Red List and the grids are computed by the European Commission- Joint Research Centre within the Digital Observatory for Protected Areas framework. The data from IUCN were downloaded in April 2020. </p>
+      <br><b>DATA PROVIDER</b>
+      <p>IUCN and European Commission - Joint Research Centre</p>
+      <br><b>TECHNICAL BACKGROUND</b>
+      <p>​​Range maps of all birds are assessed globally by the IUCN (2020.1 version of the IUCN Red List of Threatened Species TM (RLTS)). Import has been restricted to polygons that are categorized by IUCN with the following attributes:
+        ● the presence is either extant or probably extant (maintained for compliance with previous analyzes);
+        ● the origin is either native or introduced;
+        ● the seasonality is breeding, non-breeding, or resident.
+        The above polygons have been rasterized at the resolution of 1 km, then dissolved (reducing the redundancy of multiple ranges by species).
+        </p>
+      <br><b>RELATED SDGs </b>
+      <p>GOAL 15: Life on land</p>
+      </p>
+    </div>
+  </div>
+
+<div id='map' class='map'> </div>
+<div id='main_tools' class='main_tools'>
+  <div class="row">
+    <div class="col s12 m6 l3 icon_custom search_icon"><a class=" tooltipped" data-position="bottom" data-tooltip="Search for places"><span class="material-icons">search</span></div>
+    <div class="col s12 m6 l3 icon_custom layers_icon"><a class=" tooltipped" data-position="bottom" data-tooltip="Export map" id="downloadLink" href="" download="map.png"> <span class="material-icons">get_app</span></a></div>
+      
+    <div class="col s12 m6 l3 icon_custom legend_icon"><a class=" tooltipped" data-position="bottom" data-tooltip="Legend"><span class="material-icons">format_list_bulleted</span></div>
+    <div class="col s12 m6 l3 icon_custom zoom_icon"><a class=" tooltipped" data-position="bottom" data-tooltip="Set global view"><span class="material-icons">zoom_out_map</span></a></div>
+  </div>
+</div>
+        
+
+  <div id='geocoder' class='geocoder'></div>
+  <div id='country_var_dropdown' >
+ 
+    <fieldset>
+      <select id='layer_country' name='layer_country'>
+      <option value='iso3'>Select a country variable</option>
+      <option value='adm0_code'>Total Carbon</option>
+      <option value='shape_leng'>Natural Areas</option>
+      <option value='adm0_code'>Water Presence</option>
+      <option value='shape_leng'>Intact Forest</option>
+      <option value='adm0_code'>Mammals Richness</option>
+      <option value='shape_leng'>Amphibians Richness</option>
+      <option value='shape_leng'>Birds Richness</option>
+      <option value='shape_leng'>Endemic Threatened Mammals Richness</option>
+      <option value='shape_leng'>Endemic Threatened Anphibians Richness</option>
+      <option value='iso3'>Overall Score</option>
+      </select>
+      </fieldset>
+  </div>
+
+  <div id='custom_map_tools'></div>
+
+
+
+
+  
+<!-- ------------------ main sidebar where country scores and tool are displayed ------------------------------ -->
+
+      
+  <div class='sidebar' data-html2canvas-ignore="true">
+      <div id='country_name'></div>
+      <div id = 'listing'>
+      <div id = 'listingname'>
+      </div>
+     </div>
+
+
+     <ul class="collapsible manual_scores">
+      <li>
+        <div class="collapsible-header scoring_section"><i class="material-icons">tune</i> Set your conservation priorities</div>
+        <div class="collapsible-body"><span>
+          <div class='top_dropdown'>
+            <div class='top_dropdown_inner'>
+            <div class='map-overlay-inner'>
+            <form action="#">
+              <div class="input-field col s12">
+                <a class='btn modal-trigger' href='#modal-carbon'><span class='material-icons'>info</span></a><span class="material-icons delvarico delvarico-carbon">clear</span> <label>Above and Below Ground Carbon</label><br>    
+                <p class="range-field range-field-carbon"><input type="range" id="carbon_slider" value ="1" min="1" max="10" /> <output id="carbon_value" name="carbon_value">1<span></span></output></p>
+              </div>
+            </form>
+            <form action="#">
+              <div class="input-field col s12">
+                <a class='btn modal-trigger' href='#modal-water'><span class='material-icons'>info</span></a><span class="material-icons delvarico delvarico-water">clear</span> <label>Water Presence</label><br>    
+                <p class="range-field range-field-water"><input type="range" id="water_slider" value ="1" min="1" max="10" /> <output id="water_value" name="water_value">1<span></span></output></p>
+              </div>
+            </form>
+            <form action="#">
+              <div class="input-field col s12">
+                <a class='btn modal-trigger' href='#modal-natural'><span class='material-icons'>info</span></a> <span class="material-icons delvarico delvarico-natural">clear</span> <label>Natural Areas Presence</label><br>    
+                <p class="range-field range-field-natural"><input type="range" id="natural_slider" value ="1" min="1" max="10" /> <output id="natural_value" name="natural_value">1<span></span></output></p>
+              </div>
+            </form>
+            <form action="#">
+              <div class="input-field col s12">
+                <a class='btn modal-trigger' href='#modal-forest'><span class='material-icons'>info</span></a> <span class="material-icons delvarico delvarico-forest">clear</span> <label>Intact Forest Presence</label><br>    
+                <p class="range-field range-field-forest"><input type="range" id="forest_slider" value ="1" min="1" max="10" /> <output id="forest_value" name="forest_value">1<span></span></output></p>
+              </div>
+            </form>
+            <form action="#">
+              <div class="input-field col s12">
+                <a class='btn modal-trigger' href='#modal-mammals'><span class='material-icons'>info</span></a><span class="material-icons delvarico delvarico-mammals">clear</span>  <label>Mammals Presence</label><br>    
+                <p class="range-field range-field-mammals"><input type="range" id="mammals_slider" value ="1" min="1" max="10" /> <output id="mammals_value" name="mammals_value">1<span></span></output></p>
+              </div>
+            </form>
+            <form action="#">
+              <div class="input-field col s12">
+                <a class='btn modal-trigger' href='#modal-th_mammals'><span class='material-icons'>info</span></a><span class="material-icons delvarico delvarico-th_mammals">clear</span> <label>Threatened Endemic Mammals Presence</label><br>    
+                <p class="range-field range-field-th_mammals"><input type="range" id="mammals_th_slider" value ="1" min="1" max="10" /> <output id="mammals_th_value" name="mammals_th_value">1<span></span></output></p>
+              </div>
+            </form>
+            <form action="#">
+              <div class="input-field col s12">
+                <a class='btn modal-trigger' href='#modal-amphibians'><span class='material-icons'>info</span></a><span class="material-icons delvarico delvarico-amphibians">clear</span> <label>Amphibians Presence</label><br>    
+                <p class="range-field range-field-amphibians"><input type="range" id="amphibians_slider" value ="1" min="1" max="10" /> <output id="amphibians_value" name="amphibians_value">1<span></span></output></p>
+              </div>
+            </form>
+            <form action="#">
+              <div class="input-field col s12">
+                <a class='btn modal-trigger' href='#modal-th_amphibians'><span class='material-icons'>info</span></a><span class="material-icons delvarico delvarico-th_amphibians">clear</span>  <label>Threatened Endemic Amphibians Presence</label><br>    
+                <p class="range-field range-field-th_amphibians"><input type="range" id="amphibians_th_slider" value ="1" min="1" max="10" /> <output id="amphibians_th_value" name="amphibians_th_value">1<span></span></output></p>
+              </div>
+            </form>
+            <form action="#">
+              <div class="input-field col s12">
+                <a class='btn modal-trigger' href='#modal-birds'><span class='material-icons'>info</span></a><span class="material-icons delvarico delvarico-birds">clear</span> <label>Birds Presence</label><br>    
+                <p class="range-field range-field-birds"><input type="range" id="birds_slider" value ="1" min="1" max="10" /> <output id="birds_value" name="birds_value">1<span></span></output></p>
+              </div>
+            </form>
+            <form action="#">
+              <div class="input-field col s12">
+                <a class='btn modal-trigger' href='#modal-th_birds'><span class='material-icons'>info</span></a><span class="material-icons delvarico delvarico-th_birds">clear</span> <label>Threatened Endemic Birds Presence</label><br>    
+                <p class="range-field range-field-th_birds"><input type="range" id="birds_th_slider" value ="1" min="1" max="10" /> <output id="birds_th_value" name="birds_th_value">1<span></span></output></p>
+              </div>
+            </form>   
+
+
+            <form action="#">
+              <p>
+                <label>
+                  <input type="checkbox" class="checkbox_check" />
+                  <span>Remove areas that are already protected</span>
+                </label>
+              </p>
+            </form>
+ 
+
+              <button id="submit">Submit</button> 
+          </div>
+          </div>
+          </div>
+        </span></div>
+      </li>
+    </ul>
+          
+
+  </div>
+
+
+  <div class='calculation-box' data-html2canvas-ignore="true">
+    <ul class="collapsible popout">
+      <li>
+        <div class="collapsible-header"><i class="material-icons">select_all</i>Area selected</div>
+        <div class="collapsible-body"><span><div id='polygon_out_main_area'></div></span></div>
+      </li>
+      <li>
+        <div class="collapsible-header"><i class="material-icons">bar_chart</i>Biodiversity Resources</div>
+        <div class="collapsible-body"><span><div id='polygon_out_main'></div></span></div>
+      </li>
+      <li>
+        <div class="collapsible-header"><i class="material-icons">eco</i>What makes this area special </div>
+        <div class="collapsible-body"><span><div id='polygon_out_main_2'></div></span></div>
+      </li>
+    </ul>
+
+    <!-- <div class='calculation-box_title_2'></div>
+    <div id='polygon_out_main_2'></div>
+    <div class='calculation-box_title'></div>
+    <div id='polygon_out_main'></div> -->
+
+ </div>
+
+
+
+
+ <div id="image"></div>
+
+ <div id="point_scores"></div>
+<div class="legend"> 
+
+  </div>
+  <script src='app/app.js'></script>
+
+</body>
+</html>
