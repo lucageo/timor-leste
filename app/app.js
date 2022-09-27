@@ -97,7 +97,7 @@ function renderListings(features) {
 // //    filterEl.parentNode.style.display = "none";
 
 //     // remove features filter***
-//     map.setFilter("country_timor", ["has", "id_gaul"]);
+//     map.setFilter("countries_timor", ["has", "id_gaul"]);
 //   }
 }
 
@@ -291,13 +291,13 @@ var miolayer = map.getLayer('point');
       }, 'waterway-label');
       
       map.addLayer({
-        "id": "country_timor",
+        "id": "countries_timor",
         "type": "fill",
         "source": {
             "type": "vector",
-            "tiles": ["https://geospatial.jrc.ec.europa.eu/geoserver/gwc/service/wmts?layer=dopa_analyst:country_timor&tilematrixset=EPSG:900913&Service=WMTS&Request=GetTile&Version=1.0.0&Format=application/x-protobuf;type=mapbox-vector&TileMatrix=EPSG:900913:{z}&TileCol={x}&TileRow={y}"]
+            "tiles": ["https://geospatial.jrc.ec.europa.eu/geoserver/gwc/service/wmts?layer=dopa_analyst:countries_timor&tilematrixset=EPSG:900913&Service=WMTS&Request=GetTile&Version=1.0.0&Format=application/x-protobuf;type=mapbox-vector&TileMatrix=EPSG:900913:{z}&TileCol={x}&TileRow={y}"]
             },
-        "source-layer": "country_timor",
+        "source-layer": "countries_timor",
   
         'paint': { 
           'fill-color': '#618135',
@@ -340,9 +340,9 @@ var miolayer = map.getLayer('point');
         "type": "circle",
         "source": {
             "type": "vector",
-            "tiles": ["https://geospatial.jrc.ec.europa.eu/geoserver/gwc/service/wmts?layer=dopa_analyst:point_timor_3857&tilematrixset=EPSG:900913&Service=WMTS&Request=GetTile&Version=1.0.0&Format=application/x-protobuf;type=mapbox-vector&TileMatrix=EPSG:900913:{z}&TileCol={x}&TileRow={y}"]
+            "tiles": ["https://geospatial.jrc.ec.europa.eu/geoserver/gwc/service/wmts?layer=dopa_analyst:points_timor_3857_final&tilematrixset=EPSG:900913&Service=WMTS&Request=GetTile&Version=1.0.0&Format=application/x-protobuf;type=mapbox-vector&TileMatrix=EPSG:900913:{z}&TileCol={x}&TileRow={y}"]
             },
-        "source-layer": "point_timor_3857",
+        "source-layer": "points_timor_3857_final",
         'paint': {
           // make circles larger as the user zooms from z12 to z22
           'circle-radius': {
@@ -391,9 +391,9 @@ var miolayer = map.getLayer('point');
         "type": "circle",
         "source": {
             "type": "vector",
-            "tiles": ["https://geospatial.jrc.ec.europa.eu/geoserver/gwc/service/wmts?layer=dopa_analyst:point_timor_3857&tilematrixset=EPSG:900913&Service=WMTS&Request=GetTile&Version=1.0.0&Format=application/x-protobuf;type=mapbox-vector&TileMatrix=EPSG:900913:{z}&TileCol={x}&TileRow={y}"]
+            "tiles": ["https://geospatial.jrc.ec.europa.eu/geoserver/gwc/service/wmts?layer=dopa_analyst:points_timor_3857_final&tilematrixset=EPSG:900913&Service=WMTS&Request=GetTile&Version=1.0.0&Format=application/x-protobuf;type=mapbox-vector&TileMatrix=EPSG:900913:{z}&TileCol={x}&TileRow={y}"]
             },
-        "source-layer": "point_timor_3857",
+        "source-layer": "points_timor_3857_final",
         'paint': {
           // make circles larger as the user zooms from z12 to z22
           'circle-radius': {
@@ -717,7 +717,7 @@ var miolayer = map.getLayer('point');
       
 
     map.on("moveend", function () {
-    var features = map.queryRenderedFeatures({ layers: ["country_timor"] });
+    var features = map.queryRenderedFeatures({ layers: ["countries_timor"] });
 
     if (features) {
       var uniqueFeatures = getUniqueFeatures(features, "adm0_code");
@@ -733,7 +733,7 @@ var miolayer = map.getLayer('point');
     }
   });
 
-  map.on("mousemove", "country_timor", function (e) {
+  map.on("mousemove", "countries_timor", function (e) {
     // Change the cursor style as a UI indicator.
     map.getCanvas().style.cursor = "pointer";
 
@@ -789,7 +789,7 @@ var miolayer = map.getLayer('point');
         ).addTo(map);
   });
 
-  map.on("mouseleave", "country_timor", function () {
+  map.on("mouseleave", "countries_timor", function () {
     map.getCanvas().style.cursor = "";
     map.getCanvas().style.cursor = "";
     popup.remove();
@@ -898,7 +898,7 @@ popup.setLngLat(coordinates).setHTML(
           "<div id='progressbar'><div style='width:"+birds_w+"%'></div></div>"+        
           "<span class = 'coll_item_title' > Threatened Birds Richness ("+birds_th.toLocaleString()+")</span>"+
           "<div id='progressbar'><div style='width:"+birds_th_w+"%'></div></div>"+   
-          //"<hr><div class = 'total_score' > <b>"+((birds_th+birds+amphi_th+amphibians+mammals_th+mammals+forest+natural+water+carbon).toLocaleString())+"</div>"+ 
+          "<hr><div class = 'total_score' > <b>"+((birds_th+birds+amphi_th+amphibians+mammals_th+mammals+forest+natural+water+carbon).toLocaleString())+"</div>"+ 
          
           "</div></li></ul>"
 
@@ -916,17 +916,13 @@ popup.remove();
 var layer_country = document.getElementById('layer_country');
 layer_country.addEventListener('change', function() {
   var layer_country_value = document.getElementById('layer_country').value;
-  map.setPaintProperty('country_timor', 'fill-color', ['interpolate',['linear'],['get', layer_country_value],0, '#ffffd4',10, '#ffefb5',50, '#ffde96',100, '#fec46c',150, '#fea73f',250, '#f68c23',350, '#e67217',500, '#d25a0c',750, '#b64708',1000, '#993404']);
+  map.setPaintProperty('countries_timor', 'fill-color', ['interpolate',['linear'],['get', layer_country_value],0, '#ffffd4',10, '#ffefb5',50, '#ffde96',100, '#fec46c',150, '#fea73f',250, '#f68c23',350, '#e67217',500, '#d25a0c',750, '#b64708',1000, '#993404']);
 });
 
 
 
 // this is the submit button that collect all the scores and repaint points
 $('#dddd').hide();
-
-
-
-
 
 
 
@@ -963,6 +959,14 @@ var mean_amphibians = 0
 var mean_th_birds = 0
 var mean_th_mammals = 0
 var mean_th_amphibians = 0
+
+function count_points(){
+  var features = map.queryRenderedFeatures({ layers: ['grid_points_3'] });
+  var count = features.length;
+  return count
+};
+
+
 
 
 
@@ -1199,6 +1203,9 @@ function th_birds_mean(){
     return mean
 };
 
+
+
+
 // mario
 
 $("#country_name").click(function(){
@@ -1276,7 +1283,7 @@ setTimeout(function(){
 
   
 
-  map.on('click', 'country_timor', function(e) {
+  map.on('click', 'countries_timor', function(e) {
 
     window.history.replaceState(null, null, "?iso3="+e.features[0].properties.iso3);
     var pa_bb_url = "https://geospatial.jrc.ec.europa.eu/geoserver/wfs?request=getfeature&version=1.0.0&service=wfs&typename=dopa_explorer_3:global_dashboard&propertyname=iso3_digit&SORTBY=iso3_digit&CQL_FILTER=iso3_digit='"+e.features[0].properties.iso3+"'&outputFormat=application%2Fjson";
@@ -1434,6 +1441,7 @@ setTimeout(function(){
              country_th_mammals = feature.properties.th_mam_a;
               return country_th_mammals;
           }
+          console.log(c_th_mammals ());
           function c_amphibians () {
             var feature = e.features[0];
              country_amphibians = feature.properties.amp_a;
@@ -1570,6 +1578,8 @@ setTimeout(function(){
 
       
 
+
+
       $('#country_name').empty().append("<div id='country_name_'><p>Average Conservation Score for "+feature.properties.adm0_name+"</p></div> "+
       "<div id = 'country_pop_main' class = 'card_custom country_pop_main_a'><div id='country_pop_title' class = 'section_out_title'> <p>Country overall</p> </div><div id='country_popx' class = 'section_out_number'> <p> "+up_all_country_avg_val.toFixed(2)+"</p> </div></div>"+
       "<div id = 'country_pop_main' class = 'card_custom country_pop_main_b'><div id='country_pop_title' class = 'section_out_title'> <p>Outside Protected Areas</p> </div><div id='country_popx2' class = 'section_out_number'> <p> "+all_country_avg_val.toFixed(2)+"</p> </div></div>"+
@@ -1639,7 +1649,7 @@ setTimeout(function(){
 }
 
       //  var coordinates = feature.geometry.coordinates;
-      var cfeatures = map.queryRenderedFeatures(e.point, { layers: ['country_timor'] });
+      var cfeatures = map.queryRenderedFeatures(e.point, { layers: ['countries_timor'] });
       var filter = cfeatures.reduce(function(memo, feature) {
              memo.push(feature.properties.adm0_code);
              return memo;
@@ -1647,7 +1657,7 @@ setTimeout(function(){
              bounds.extend(feature.geometry.coordinates);
              map.fitBounds(bounds);
          }, ['!in', 'adm0_code']);
-         map.setFilter("country_timor", filter);
+         map.setFilter("countries_timor", filter);
 
 
         var filter_points = ["in", 'adm0_code', country_id];
@@ -1677,27 +1687,6 @@ setTimeout(function(){
         $('.mapbox-gl-draw_trash').click();
         map.setFilter('point_selecte_by_drow', ['==', 'fid', "" ]);
     });
-
-
-
- 
-  // var tilesLoaded = map.areTilesLoaded();
-  // if (tilesLoaded == true){
-  //   setTimeout(function(){
-  //     $("#map").busyLoad("hide", {animation: "fade"});
-   
-  //   }, 3000);
-
-   
-
-  // }else{
-  //   setTimeout(function(){
-  //     $("#map").busyLoad("hide", {animation: "fade"});
-   
-  //   }, 5000);
-     
-
-  // }
 
   
 
@@ -1886,7 +1875,7 @@ $('.delvarico-carbon').click(function() {
       $('.range-field-th_birds').css('opacity', '0');
       }});
 
-// duccio
+
 $("#submit").click(function () { 
 
   var queryString = window.location.search;
@@ -1924,7 +1913,6 @@ $("#submit").click(function () {
   console.log(tilesLoaded);
 
 
-   
     max_carbon = (carbon_max());
     max_water = (water_max());
     max_natural = (natural_max());
@@ -2030,7 +2018,7 @@ $("#submit").click(function () {
       [ "*", ['get', 'birds_th'],  parseInt(score_th_birds)]
       ],
 
-      min_val,"#C73908",avg_val, "#E2EB16", max_val,"#12EB5D"]);
+      min_val,"#f2690a",avg_val, "#E2EB16", max_val,"#12EB5D"]);
 
       var avg_leg_pos = (100*avg_val)/max_val
       var avg_leg_pos_gr = ((100*avg_val)/max_val)-10
@@ -2039,11 +2027,14 @@ $("#submit").click(function () {
         "<div style='color: #dadada; font-size: 12px; float: left!important;'>"+min_val.toFixed(2)+"</div>"+
         "<div style='color: #dadada; font-size: 12px; float: left!important; margin-bottom: -30px; margin-left: "+avg_leg_pos_gr+"%;!important;'>"+avg_val.toFixed(2)+"</div>"+
         "<div style='color: #dadada; font-size: 12px; float: right!important;'>"+max_val.toFixed(2)+"</div>"+
-        "<div class='LegendGradient' style='background-image: -webkit-linear-gradient(left,#C73908 -25%,#E2EB16 50%,#12EB5D 75%)!important; clear: both;'></div>"+
+        "<div class='LegendGradient' style='background-image: -webkit-linear-gradient(left,#ff0000 -25%,#E2EB16 50%,#12EB5D 75%)!important; clear: both;'></div>"+
        // "<hr><div class='legenddistrib' style='color: #dadada; font-size: 12px; text-align: center!important;'>"+Math.abs(avg_leg_pos-100).toFixed(1)+"% of locations holds above average values.</div>"+
         "</div>");
 
       }
+
+
+
    
       },1000);
 
@@ -2420,7 +2411,7 @@ Highcharts.chart('polygon_out_main_2', {
 
     xAxis: {
         categories: ['Carbon', 'Natural Areas', 'Water Presence', 'Intact Forest',
-            'Mammals Richness', 'Amphibians Richness', 'Birds Richness','Threatened Mammals Richness', 'Threatened Amphibians Richness', 'Threatened Birds Richness'],
+            'Mammals Richness', 'Amphibians Richness', 'Birds Richness','Threatened Amphibians Richness', 'Threatened  Mammals Richness', 'Threatened Birds Richness'],
         tickmarkPlacement: 'on',
         lineWidth: 0
 
@@ -2458,7 +2449,7 @@ Highcharts.chart('polygon_out_main_2', {
         color: '#47585a',
         data: [parseFloat((CarbonTotal)), parseFloat((NaturalTotal)), parseFloat((WaterTotal)),
         parseFloat((ForestTotal)), parseFloat((MammalsTotal)), parseFloat((AmphibiansTotal)), parseFloat((BirdsTotal)), 
-         parseFloat((ThMammalsTotal)), parseFloat((ThAmphibiansTotal))],
+        parseFloat((ThAmphibiansTotal)),parseFloat((ThMammalsTotal)), parseFloat((ThBirdsTotal))],
         pointPlacement: 'on',
         lineWidth : 1,
     }, {
@@ -2467,7 +2458,7 @@ Highcharts.chart('polygon_out_main_2', {
     },
         name: 'Country',
         color: '#e47923',
-        data: [country_carbon, country_natural, country_water, country_forest, country_mammals, country_amphibians, country_birds, country_th_birds, country_th_mammals,country_th_amphibians],
+        data: [country_carbon, country_natural, country_water, country_forest, country_mammals, country_amphibians, country_birds, country_th_amphibians, country_th_mammals, country_th_birds],
         pointPlacement: 'on',
         lineWidth : 1,
         type:'line',
@@ -2478,7 +2469,7 @@ Highcharts.chart('polygon_out_main_2', {
     },
         name: 'Protected areas',
         color: '#648a31',
-        data: [country_carbon_pa, country_natural_pa, country_water_pa, country_forest_pa, country_mammals_pa, country_amphibians_pa, country_birds_pa, country_th_birds_pa, country_th_mammals_pa,country_th_amphibians_pa],
+        data: [country_carbon_pa, country_natural_pa, country_water_pa, country_forest_pa, country_mammals_pa, country_amphibians_pa, country_birds_pa, country_th_amphibians_pa, country_th_mammals_pa, country_th_birds_pa,],
         pointPlacement: 'on',
         lineWidth : 1,
         type:'line',
